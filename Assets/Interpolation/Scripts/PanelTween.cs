@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PanelTween : MonoBehaviour
 {
@@ -12,8 +13,11 @@ public class PanelTween : MonoBehaviour
         EaseInOut
     }
 
-    public TweenType tweenType = TweenType.Linear;
+    public TweenType tweenType = TweenType.EaseOut;
     public float tweenDuration = 1f;
+
+    //start position.x is 540
+    //end position.x is 340
 
     public RectTransform panel; 
 
@@ -25,7 +29,7 @@ public class PanelTween : MonoBehaviour
         // The onscreen position is set to the center of the game window.
         // Try to change that to something better, like just at the edge 
         // of the window.
-        onScreenPosition = Vector3.zero;
+        onScreenPosition = new Vector3 (340, 0, 0);
         offScreenPosition = panel.localPosition;
     }
 
@@ -38,10 +42,12 @@ public class PanelTween : MonoBehaviour
         if (panel.localPosition == onScreenPosition)
         {
             HidePanel();
+            Debug.Log("Panel hidden");
         }
         else
         {
             ShowPanel();
+            Debug.Log("panel shown");
         }
     }
 
@@ -75,22 +81,24 @@ public class PanelTween : MonoBehaviour
                     t = t * t; // Quadratic ease-in
                     break;
                 case TweenType.EaseOut:
-                    // Quadratic ease-out - implement this code
+                    t = 1 - Mathf.Pow(1 - t, 3);
                     break;
                 case TweenType.EaseInOut:
                     if (t < 0.5f)
                     {
                         // Ease-in for the first half - implement this code
+                        t = 4 * t * t * t;
                     }
                     else
                     {
                         // Ease-out for the second half - implement this code
+                        t = 1 - Mathf.Pow(-2 * t + 2, 3) / 2;
                     }
                     break;
             }
 
             // Custom linear interpolation with modified t based on the tween type
-            float x = 0; // Wrong value - you must add the correct equation to calculate x
+            float x = (1 - t) * start.x + t * end.x; // Wrong value - you must add the correct equation to calculate x
             float y = 0; // Wrong value - you must add the correct equation to calculate y
 
             // Set the panel position
